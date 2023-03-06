@@ -1,5 +1,6 @@
 <template>
-<v-list lines="one">
+  <div></div>
+<!-- <v-list lines="one">
   <v-list-item
     v-for="item in items"
     :key="item.title"
@@ -7,7 +8,7 @@
     subtitle="..."
     :prepend-avatar="item.avatar"
   ></v-list-item>
-</v-list>
+</v-list> -->
 </template>
 
 <script>
