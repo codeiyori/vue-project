@@ -1,68 +1,91 @@
 <template>
   <v-app>
-    <v-navigation-drawer :elevation="6" v-model="drawer" temporary>
-      <v-list-item>
-        <site-menu></site-menu>
-      </v-list-item>
-    </v-navigation-drawer>
-    <v-app-bar color="black" app dark>
-      <!-- <v-app-bar-nav-icon/> -->
-      <navbar-title :title="title"/>
-      <v-spacer/>
-      <v-btn icon to ="/about">
-        <v-btn icon="mdi-heart"></v-btn>
-      </v-btn>
-      <v-btn icon="mdi-magnify"></v-btn>
-      <v-btn icon="mdi-dots-vertical" @click.stop="drawer = !drawer"></v-btn>
-    </v-app-bar>
+    <Navigation v-if="!navgation" />
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
-    <site-footer :footer="footer"></site-footer>
-    </v-app>
+    <Footer />
+  </v-app>
 </template>
+                   
 <script>
-// import the firestore instance and relevant methods
-
-import db from './firebase/init.js'
-import { collection, addDoc } from 'firebase/firestore'
-
+// import { doc, orderBy, query, deleteDoc } from 'firebase/firestore'
+import SignupForm from './components/SignupForm.vue'
+import LoginForm from './components/LoginForm.vue'
+import { auth } from './firebase/init.js'
 import NavbarTitle from '@/views/site/navtitle.vue'
-import SiteFooter from '@/views/site/footer.vue'
 import SiteMenu from '@/views/site/navmenu.vue'
+import Navigation from '@/components/Navigation.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
-  methods: {
-    async createUser() {
-      // 'users' collection reference
-      const colRef = collection (db, 'users')
-      // data to send
-      const dataObj = {
-        firstName: 'John',
-        lastName: 'Doe',
-        dob: '1990'
-      }
-
-      // create document and return reference to it
-      const docRef = await addDoc(colRef, dataObj)
-
-      // access auto-generated ID with '.id'
-      console.log('Document was created with ID:', docRef.id)
+  components: { Footer, Navigation,NavbarTitle, SiteMenu, SignupForm, LoginForm },
+  name: 'App',
+  props: [],
+  data () {
+    return {
+      navgation: null,
+    };
+  },
+  beforeUpdate() {
+    if (auth.currentUser) {
+      this.displayName = auth.currentUser.displayName
     }
   },
   created() {
-    this.createUser()
-
+    auth.onAuthStateChanged((user) => {
+      this.$store.commit("updateUser", user);
+      if (user) {
+        this.$store.dispatch("getCurrentUser");
+      }
+    })
+    this.checkRoute();
   },
-  components: { NavbarTitle, SiteFooter, SiteMenu },
-  name: 'App',
-  props: ['footer', 'title'],
-  data () {
-    return {
-      drawer: false
+  methods: {
+    checkRoute() {
+      if (
+        this.$route.name === "Login" || 
+        this.$route.name === "Register" || 
+        this.$route.name === "ForgotPassword"
+      ) {
+        this.navigation = true;
+        return;
+      } 
+      this.navigation = false;
     }
   },
-  mounted () {
-  }
+  watch: {
+    $route() {
+      this.checkRoute();
+    }
+  },
 }
 </script>
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: black;
+}
+.link-light {
+  color: #fff;
+}
+</style>

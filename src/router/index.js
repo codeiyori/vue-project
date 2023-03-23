@@ -1,41 +1,88 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Home from '../views/Home.vue'
+import Blogs from '../views/Blogs.vue'
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
+import MyAccount from '../views/MyAccount.vue'
+import Profile from '../views/Profile.vue'
+import Admin from '../views/Admin.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'Home',
+    component: Home,
+    meta: {
+      title: "Home"
+    }
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: "/blogs",
+    name: "Blogs",
+    component: Blogs,
+    meta: {
+      title: 'Blogs'
+    }
   },
   {
-    path: '/test123',
-    name: 'test123',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/test123.vue')
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: {
+      title: "Login"
+    }
   },
   {
-    path: '/ted',
-    name: 'ted',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/tedPage.vue')
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    meta: {
+      title: 'Register'
+    }
+  },
+  {
+    path: '/my-account',
+    name: 'MyAccount',
+    component: MyAccount,
+    meta: {
+      title: 'My Account'
+    }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: {
+      title: 'Profile'
+    }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: {
+      title: 'Admin'
+    }
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    meta: {
+      title: 'Forgot Password'
+    }
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} | CODEMIB`;
+  next();
 })
 
 export default router
