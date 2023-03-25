@@ -1,27 +1,55 @@
 <template>
-    <div>
-      <h1>Create Post</h1>
-      <form @submit.prevent="submitPost">
-        <div>
-          <label for="post-title">Title:</label>
-          <input id="post-title" type="text" v-model="postTitle" required>
+    <v-container>
+        <div class="text-h6 mb-2 font-weight-black text-center">
+            Create Post
         </div>
+        <v-form validate-on="submit" @submit.prevent="submit">
+        <v-text-field
+            v-model="postTitle"
+            color="error"
+            required
+            label="Title"
+            class="my-text-field"
+            density="compact"
+            variant="outlined"
+            hide-details
+            placeholder="Enter your title"
+            style="background-color: white;"
+        ></v-text-field>
+        <v-divider color="transparent" class="my-2"></v-divider>
         <div>
-          <label for="post-content">Content:</label>
-          <VueEditor v-model="postContent"></VueEditor>
+          <VueEditor v-model="postContent" ></VueEditor>
+          
         </div>
-        <button type="submit">Submit Post</button>
-      </form>
-    </div>
-  </template>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="" color="error" size="small" variant="outlined">
+            Submit
+        </v-btn>
+        </v-card-actions>
+        </v-form>
+    </v-container>
+</template>
+<style>
+.ql-container {
+    background: white;
+    
+}
+.v-text-field--outlined {
+  border-color: rgba(192, 0, 250, 0.986);
+}
+</style>
 
 <script>
-import { VueEditor } from 'vue3-editor'
+import { QuillResize } from 'quill-image-resize-module'
+import { VueEditor, Quill } from 'vue3-editor'
+
+Quill.register('modules/imageResize', QuillResize);
 
 export default {
   name: "CreatePost",
   components: {
-    VueEditor,
+    VueEditor, QuillResize
   },
   data() {
     return {

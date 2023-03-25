@@ -39,12 +39,11 @@ import { ref } from 'vue'
 import { auth } from '@/firebase/init'
 import { defineComponent } from 'vue'
 import LoginMsg from './LoginForm.vue'
-import LogOutMsg from '../views/MyAccount.vue'
 import SignUp from '../views/Register.vue'
 import ProfileModal from './ProfileModal.vue'
 
 export default defineComponent({
-  components: { LoginMsg, LogOutMsg, SignUp, ProfileModal },
+  components: { LoginMsg, SignUp, ProfileModal },
   name: 'Navigation',
   data() {
     return {

@@ -54,7 +54,6 @@
           variant="underlined"
         ></v-text-field>
       </v-container>
-      <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click.prevent="register" color="primary">

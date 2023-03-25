@@ -3,12 +3,12 @@ import Home from '../views/Home.vue'
 import Blogs from '../views/Blogs.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
-import MyAccount from '../views/MyAccount.vue'
 import Profile from '../views/Profile.vue'
 import Admin from '../views/Admin.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import CreatePost from '../views/CreatePost.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import NotFound from '../views/NotFound.vue'
 
 const auth = getAuth();
 
@@ -38,22 +38,30 @@ const routes = [
     component: Login,
     meta: {
       title: "Login"
+    },
+    beforeEnter: (to, from, next) => {
+      const user = auth.currentUser;
+      if (user) {
+        next('/');
+      } else {
+        next();
+      }
     }
-  },
+  }, 
   {
     path: '/register',
     name: 'Register',
     component: Register,
     meta: {
       title: 'Register'
-    }
-  },
-  {
-    path: '/my-account',
-    name: 'MyAccount',
-    component: MyAccount,
-    meta: {
-      title: 'My Account'
+    },
+    beforeEnter: (to, from, next) => {
+      const user = auth.currentUser;
+      if (user) {
+        next('/');
+      } else {
+        next();
+      }
     }
   },
   {
@@ -78,8 +86,14 @@ const routes = [
     name: 'Admin',
     component: Admin,
     meta: {
-      title: 'Admin'
+      title: 'Admin',
+      requiresAdmin: true,
     }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
   },
   {
     path: '/forgot-password',
@@ -108,10 +122,10 @@ router.beforeEach(async (to, from, next) => {
         document.title = `${to.meta.title} | CODEMIB`;
         next();
       } else {
-        next('/login');
+        next('/notfound');
       }
     } else {
-      next('/login');
+      next('/notfound');
     }
   } else {
     document.title = `${to.meta.title} | CODEMIB`;

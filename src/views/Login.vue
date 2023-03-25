@@ -32,7 +32,6 @@
         <router-link class="router-link" :to="{ name: 'ForgotPassword' }">Forgot your password?</router-link>
       </p>
       </v-container>
-      <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click.prevent="signIn" color="primary">
