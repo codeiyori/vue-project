@@ -1,19 +1,22 @@
 <template>
-    <v-card
-      class="mx-auto"
-      max-width="344"
-      title="User Registration"
-      variant="flat"
-    >
-      <v-container>
+  <v-container class="fill-height d-flex align-center justify-center">
+    <v-card class="mx-auto pa-5" max-width="344" width="320" elevation="2">
+      <v-card-title class="text-center font-weight-bold">
+        User Registration
+      </v-card-title>
+      <v-card-text class="text-center">
         <p class="login-register">
-        Already have an account?
-        <router-link class="router-link" :to="{ name: 'Login' }">Login</router-link>
-        </p> 
+          Already have an account?
+          <router-link class="router-link" :to="{ name: 'Login' }">Login</router-link>
+        </p>
+      </v-card-text>
+      <v-container class="pt-0 pb-0">
         <v-text-field
           v-model="firstname"
+          input-font-size="14"
           color="primary"
           label="First Name"
+          hide-details
           placeholder="Enter your first name"
           variant="underlined"
         ></v-text-field>
@@ -21,6 +24,8 @@
           v-model="lastname"
           color="primary"
           label="Last Name"
+          detail="none"
+          hide-details
           placeholder="Enter your last name"
           variant="underlined"
         ></v-text-field>
@@ -28,6 +33,8 @@
           v-model="username"
           color="primary"
           label="Username"
+          hide-details
+          autocomplete="username"
           placeholder="Enter your username"
           variant="underlined"
         ></v-text-field>
@@ -35,28 +42,33 @@
           v-model="email"
           color="primary"
           label="Email"
+          hide-details
           placeholder="Enter your email address"
           variant="underlined"
         ></v-text-field>
-          <v-text-field
+        <v-text-field
           v-model="password"
           color="primary"
           label="Password"
           placeholder="Enter your password"
           variant="underlined"
-        ></v-text-field>  
+        ></v-text-field>
       </v-container>
-        <v-divider></v-divider>
-        <v-card-actions>
+      <v-divider></v-divider>
+      <v-card-actions>
         <v-spacer></v-spacer>
-        <div v-show="error" class="error">{{ this.errorMsg }}</div>
-        <v-btn @click.prevent="register">
-          Sign In
+        <v-btn @click.prevent="register" color="primary">
+          Submit
           <v-icon icon="mdi-chevron-right" end></v-icon>
         </v-btn>
       </v-card-actions>
+      <v-card-text v-if="error" class="text-center pl-2 pr-2 pt-0">
+          <span class="text-center">{{ this.errorMsg }}</span>
+      </v-card-text>
     </v-card>
-  </template>
+  </v-container>
+</template>
+
 <script>
 import { db } from '../firebase/init.js'
 import { auth } from '../firebase/init.js'

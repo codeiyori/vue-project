@@ -11,8 +11,14 @@ export default createStore({
       { blogTitle: "Blog Card #3", blogCoverPhoto: "stock-1", blogDate: "May 3, 2021"},
       { blogTitle: "Blog Card #4", blogCoverPhoto: "stock-1", blogDate: "May 4, 2021"}
     ],
+    blogHTML: "write your blog title here...",
+    blogTitle: "",
+    blogPhotoName: "",
+    blogPhotoFileURL: null,
+    blogPhotoPreview: null,
     editPost: null,
     user: null,
+    profileAdmin: null,
     profileEmail: null,
     profileFirstName: null,
     profileLastName: null,
@@ -28,6 +34,9 @@ export default createStore({
     },
     updateUser(state, payload) {
       state.editPost = payload;
+    },
+    setProfileAdmin(state, payload) {
+      state.profileAdmin = payload;
     },
     setProfileInfo(state, doc){
       state.profileId = doc.id;
@@ -52,15 +61,18 @@ export default createStore({
     }
   },
   actions: {
-    async getCurrentUser({ commit }) {
+    async getCurrentUser({ commit }, user) {
       // const dataBase = await db.collection('users').doc(auth.currentUser.uid); Firebase SDK 8버젼용 or 이전
       const dataBase = await doc(collection(db, 'users'), auth.currentUser.uid);
       // const dbResults = await getDoc(dataBase);
       // commit("setProfileInfo", dbResults);
       // commit("setProfileInitials");
-      onSnapshot(dataBase, (doc) => {
+      onSnapshot(dataBase, async (doc) => {
         commit("setProfileInfo", doc);
         commit("setProfileInitials");
+        const token = await user.getIdTokenResult();
+        const admin = await token.claims.admin;
+        commit('setProfileAdmin', admin);
       });
     },
     async updateUserSettings({ commit, state }) {

@@ -7,6 +7,13 @@ import MyAccount from '../views/MyAccount.vue'
 import Profile from '../views/Profile.vue'
 import Admin from '../views/Admin.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
+import CreatePost from '../views/CreatePost.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+const auth = getAuth();
+
+const isAdmin = (user) => user && user.admin;
+
 
 const routes = [
   {
@@ -50,6 +57,15 @@ const routes = [
     }
   },
   {
+    path: '/create-post',
+    name: 'CreatePost',
+    component: CreatePost,
+    meta: {
+      title: 'Create Post',
+      requiresAdmin: true,
+    },
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: Profile,
@@ -75,14 +91,32 @@ const routes = [
   }
 ]
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
 
-router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} | CODEMIB`;
-  next();
-})
+router.beforeEach(async (to, from, next) => {
+  const requiresAdmin = to.meta.requiresAdmin;
+  const user = auth.currentUser;
 
-export default router
+  if (requiresAdmin) {
+    if (user) {
+      const tokenResult = await user.getIdTokenResult();
+      if (isAdmin(tokenResult.claims)) {
+        document.title = `${to.meta.title} | CODEMIB`;
+        next();
+      } else {
+        next('/login');
+      }
+    } else {
+      next('/login');
+    }
+  } else {
+    document.title = `${to.meta.title} | CODEMIB`;
+    next();
+  }
+});
+
+export default router;

@@ -8,7 +8,7 @@
         <ul v-show="!mobile">
           <router-link class="link" :to="{name: 'Home'}">Home</router-link>
           <router-link class="link" :to="{name: 'Blogs'}">Blogs</router-link>
-          <router-link class="link pt-2 pb-2" to="#">Create Post</router-link>
+          <router-link v-if ="admin" class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
           <router-link v-if ="!user" class="link" :to="{name: 'Login'}">Login/Register</router-link> 
           <template v-if="user">
              <ProfileModal />
@@ -67,21 +67,26 @@ export default defineComponent({
     window.addEventListener('resize', this.checkScreen);
     this.checkScreen();
   },
-    methods: {
-      checkScreen() {
-        this.windownWidth = window.innerWidth
-        if (this.windownWidth <= 768) {
-          this.mobile = true;
-          return;
-        }
-        this.mobile = false;
-        this.mobileNav = false;
+  methods: {
+    checkScreen() {
+      this.windownWidth = window.innerWidth
+      if (this.windownWidth <= 768) {
+        this.mobile = true;
         return;
-      },
-      toggleMobileNav() {
-        this.mobileNav = !this.mobileNav
-      },
+      }
+      this.mobile = false;
+      this.mobileNav = false;
+      return;
     },
+    toggleMobileNav() {
+      this.mobileNav = !this.mobileNav
+    },
+  },
+  computed: {
+    admin() {
+      return this.$store.state.profileAdmin;
+    }
+  },
 });
 </script>
   

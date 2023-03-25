@@ -1,20 +1,22 @@
 <template>
-  <v-container>
-    <v-card class="mx-auto" max-width="344" variant="outlined">
+ <v-container class="fill-height d-flex align-center justify-center">
+    <v-card class="mx-auto pa-5" max-width="344" width="320" elevation="2">
       <v-card-title class="text-center font-weight-bold">
         User Sign-In
       </v-card-title>
-      <v-card-text class="text-center pa-0">
+      <v-card-text class="text-center">
         <p class="login-register">
           Don't have an account?
           <router-link class="router-link" :to="{ name: 'Register' }">Register</router-link>
         </p>
       </v-card-text>
-      <v-container>
+      <v-container class="pt-0 pb-0">
       <v-text-field
         v-model="email"
         color="primary"
         label="Email"
+        autocomplete="email"
+        hide-details
         placeholder="Enter your email address"
         variant="underlined"
       ></v-text-field>
@@ -22,6 +24,7 @@
         v-model="password"
         color="primary"
         label="Password"
+        autocomplete="on"
         placeholder="Enter your password"
         variant="underlined"
       ></v-text-field>
@@ -40,7 +43,7 @@
       <Modal v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
       <Loading v-if="loading" />
     </v-card>
-  </v-container>
+</v-container>
 </template>
 
 <script>

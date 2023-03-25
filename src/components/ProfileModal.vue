@@ -15,8 +15,8 @@
             <v-divider class="my-1"></v-divider>
             <v-btn size="small" variant="plain" :to="{ name: 'Profile' }">Profile</v-btn>
             <v-divider class="my-1"></v-divider>
-            <v-btn size="small" variant="plain" :to="{ name: 'Admin' }">Admin</v-btn>
-            <v-divider class="my-1"></v-divider>
+            <v-btn v-if="admin" size="small" variant="plain" :to="{ name: 'Admin' }">Admin</v-btn>
+            <v-divider v-if="admin" class="my-1"></v-divider>
             <v-btn size="small" @click="signOut" color="error" variant="plain">Sign Out</v-btn>
         </div>
         </v-card-text>
@@ -39,6 +39,11 @@ export default {
         this.loading = false;
         this.$router.push({ name: "Home" });
       }
-    }
+    },
+    computed: {
+        admin() {
+        return this.$store.state.profileAdmin;
+        }
+    },
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Navigation v-if="!navgation" />
-    <v-main>
+    <v-main style="background-color: #f6f6f7;">
       <router-view />
     </v-main>
     <Footer />
@@ -36,7 +36,7 @@ export default {
     auth.onAuthStateChanged((user) => {
       this.$store.commit("updateUser", user);
       if (user) {
-        this.$store.dispatch("getCurrentUser");
+        this.$store.dispatch("getCurrentUser", user);
       }
     })
     this.checkRoute();

@@ -41,13 +41,13 @@ export default {
     return { user }
   },
   computed: {
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards
-    },
-    user() {
-      return this.$store.state.user
-    }
+  sampleBlogCards() {
+    return this.$store.state.sampleBlogCards
   },
+  currentUser() {
+    return this.$store.state.user
+  }
+},
   data() {
       return {
           welcomeScreen: {
