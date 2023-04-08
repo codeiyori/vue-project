@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container class="pa-0">
+    <!-- <v-container class="pa-0">
       <blog-post v-if="!user" :post="welcomeScreen" />
       <blog-post v-else="user" :post="GoodByeScreen" />
       <blog-post v-for="(post, index) in sampleBlogPost" :post="post" :key="index" />
@@ -16,7 +16,7 @@
           </div>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
   </div>
 </template>
 

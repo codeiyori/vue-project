@@ -105,7 +105,8 @@ export default {
             firstname: this.firstname,
             lastname: this.lastname,
             username: this.username,
-            email: this.email
+            email: this.email,
+            status: "User"
           })
           this.$emit('loggedIn')
           this.$router.push({ name: "Home" });

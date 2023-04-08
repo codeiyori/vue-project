@@ -1,23 +1,20 @@
 import { createStore } from 'vuex'
 import { auth } from '../firebase/init.js'
 import { db } from '../firebase/init.js'
-import {  collection, doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
 
 export default createStore({
   state: {
     sampleBlogCards: [
       { blogTitle: "Blog Card #1", blogCoverPhoto: "stock-1", blogDate: "May 1, 2021"},
-      { blogTitle: "Blog Card #2", blogCoverPhoto: "stock-1", blogDate: "May 2, 2021"},
-      { blogTitle: "Blog Card #3", blogCoverPhoto: "stock-1", blogDate: "May 3, 2021"},
-      { blogTitle: "Blog Card #4", blogCoverPhoto: "stock-1", blogDate: "May 4, 2021"}
     ],
-    blogHTML: "write your blog title here...",
     blogTitle: "",
+    blogHTML: "",
     blogPhotoName: "",
     blogPhotoFileURL: null,
-    blogPhotoPreview: null,
     editPost: null,
     user: null,
+    status: null,
     profileAdmin: null,
     profileEmail: null,
     profileFirstName: null,
@@ -25,10 +22,26 @@ export default createStore({
     profileUsername: null,
     profileId: null,
     profileInitials: null,
+    users: []
   },
   getters: {
   },
   mutations: {
+    setUsers(state, payload) {
+      state.users = payload
+    },
+    setStatus(state, payload) {
+      state.status = payload
+    },
+    setBlogPosts(state, payload) {
+      state.blogPosts = payload
+    },
+    updateBlogTitle(state, payload) {
+      state.blogTitle = payload;
+    },
+    newBlogPost(state, payload) {
+      state.blogHTML = payload;
+    },
     toggleEditPost(state, payload) {
       state.editPost = payload;
     },
@@ -63,10 +76,10 @@ export default createStore({
   actions: {
     async getCurrentUser({ commit }, user) {
       // const dataBase = await db.collection('users').doc(auth.currentUser.uid); Firebase SDK 8버젼용 or 이전
+      if (!auth.currentUser) {
+        return;
+      }
       const dataBase = await doc(collection(db, 'users'), auth.currentUser.uid);
-      // const dbResults = await getDoc(dataBase);
-      // commit("setProfileInfo", dbResults);
-      // commit("setProfileInitials");
       onSnapshot(dataBase, async (doc) => {
         commit("setProfileInfo", doc);
         commit("setProfileInitials");
@@ -76,6 +89,9 @@ export default createStore({
       });
     },
     async updateUserSettings({ commit, state }) {
+      if (!auth.currentUser) {
+        return;
+      }
       const database = collection(db, 'users');
       const userDoc = doc(database, state.profileId);
       await updateDoc(userDoc, {
@@ -84,7 +100,7 @@ export default createStore({
         username: state.profileUsername
       });
       commit("setProfileInitials");
-    }
+    },
   },
   modules: {
   }

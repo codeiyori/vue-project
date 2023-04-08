@@ -4,7 +4,6 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import { auth } from './firebase/init.js';
-import { initializeApp } from 'firebase/app';
 
 let app;
 

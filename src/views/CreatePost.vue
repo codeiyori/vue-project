@@ -1,117 +1,113 @@
 <template>
-    <v-container>
-        <div class="text-h6 mb-2 font-weight-black text-center">
-            Create Post
-        </div>
-        <v-form validate-on="submit" @submit.prevent="submit">
-        <v-text-field
-            v-model="postTitle"
-            color="error"
-            required
-            label="Title"
-            class="my-text-field"
-            density="compact"
-            variant="outlined"
-            hide-details
-            placeholder="Enter your title"
-            style="background-color: white;"
-        ></v-text-field>
-        <v-divider color="transparent" class="my-2"></v-divider>
-        <div>
-          <VueEditor v-model="postContent" ></VueEditor>
-          
-        </div>
-        <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn @click="" color="error" size="small" variant="outlined">
-            Submit
-        </v-btn>
-        </v-card-actions>
-        </v-form>
-    </v-container>
+  <div>
+    <h2>Create New Post</h2>
+    <v-form>
+      <v-text-field label="Blog Title" v-model="blogTitle">
+      </v-text-field>
+      <vue-editor 
+        :editorOptions="editorSettings"
+        v-model="blogHTML"
+        @change="onFileInputChange" 
+        class="mt-4">
+      </vue-editor>
+      <v-btn color="primary" @click="uploadBlog" class="mt-4">Post</v-btn>
+      <v-alert v-if="error" type="error" class="mt-4">{{ errorMsg }}</v-alert>
+    </v-form>
+  </div>
 </template>
-<style>
-.ql-container {
-    background: white;
-    
-}
-.v-text-field--outlined {
-  border-color: rgba(192, 0, 250, 0.986);
-}
-</style>
+  <script>
+  import { VueEditor } from "vue3-editor";
+  import { collection, doc, setDoc } from "firebase/firestore"; 
+  import { db, ref, uploadBytes, getDownloadURL, storage } from '../firebase/init.js'
 
-<script>
-import { QuillResize } from 'quill-image-resize-module'
-import { VueEditor, Quill } from 'vue3-editor'
-
-Quill.register('modules/imageResize', QuillResize);
-
-export default {
-  name: "CreatePost",
-  components: {
-    VueEditor, QuillResize
-  },
-  data() {
-    return {
-      postTitle: "",
-      postContent: "",
-    };
-  },
-  methods: {
-    submitPost() {
-      // Submit post data to backend API
-      console.log("Title: ", this.postTitle);
-      console.log("Content: ", this.postContent);
+  export default {
+    components: {
+      VueEditor,
     },
-  },
-};
-</script>
-
-
-
-
-<!-- <template>
-    <div class="create-post">
-        <v-container class="{invisible: !error}">
-            <p>Error: {{ this.errorMsg }}</p>
-        </v-container>
-        <input type="text" v-model="blogTitle" />
-        <div class="upload-file">
-            <label for ="blog-photo">upload photo</label>
-            <input type="file" ref="blogPhoto" id="blog-photo" accept=".png, .jpg, .jpeg" />
-            <button class="preview" :class="{ 'button-inactive': !this.$store.state.blogPhotoFileURl}">preview</button>
-            <span>file chosen: {{  this.$store.state.blogPhotoName }}</span>
-        </div>
-        <div class="editor">
-            <vue-editor :editorOption="editorSettings" v-model="blogHTML" useCustomImageHandler />
-        </div>
-        <div class="blog-action">
-            <button>publish blog</button>
-            <router-link class="router-button" to="#">post preview</router-link>
-        </div>
-    </div>
-</template>
-
-<script>
-import Quill from 'quill'
-import ImageResize from 'quill-image-resize-module';
-
-Quill.register('modules/imageResize', ImageResize);
-
-export default {
-    name: 'CreatePost',
     data() {
-        return {
-            error: null,
-            errorMsg: null,
-            editorSettings: {
-                modules: {
-                    imageResize: {
+      return {
+        error: false,
+        errorMsg: "",
+        selectedFiles: [],
+        editorSettings: {
+        },
+      };
+    },
+    methods: {
+      onFileInputChange(e) {
+        console.log('File is uploaded successfully');
+        this.selectedFiles = Array.from(e.target.files);
+      },
+      async uploadBlog() {
+        try {
+          if (this.blogTitle.length !== 0 && this.blogHTML.length !== 0) {
+            const timestamp = Date.now();
+            const dataBase = collection(db, 'blogPosts');
+            const imageUrls = [];
 
-                    },
-                }
+            for (let i = 0; i < this.selectedFiles.length; i++) {
+              const file = this.selectedFiles[i];
+              const fileName = file.name;
+              const storageRef = ref(storage, fileName);
+              const snapshot = await uploadBytes(storageRef, file);
+              const imageUrl = await getDownloadURL(snapshot.ref);
+              imageUrls.push(imageUrl);
             }
+
+            await setDoc(doc(dataBase), {
+              blogTitle: this.blogTitle,
+              blogHTML: this.blogHTML,
+              profileId: this.profileId,
+              date: timestamp,
+              imageUrls: imageUrls,
+            });  
+
+            this.$router.push({ name: "Home" });
+          } else {
+            this.error = true;
+            this.errorMsg = "Please ensure Blog Title & Blog Post has been filled!";
+            setTimeout(() => {
+              this.error = false;
+            }, 5000);
+          }
+        } catch (error) {
+          console.log(error);
+          this.error = true;
+          this.errorMsg = "Something went wrong. Please try again later!";
+          setTimeout(() => {
+            this.error = false;
+          }, 5000);
         }
-    }
-}
-</script> -->
+      },
+      browseFiles() {
+        this.$refs.fileInput.click();
+      },
+    },
+    computed: {
+      profileId() {
+        return this.$store.state.profileId;
+      },
+      blogTitle: {
+        get() {
+          return this.$store.state.blogTitle;
+        },
+        set(payload) {
+          this.$store.commit("updateBlogTitle", payload);
+        },
+      },
+      blogHTML: {
+        get() {
+          return this.$store.state.blogHTML;
+        },
+        set(payload) {
+          this.$store.commit("newBlogPost", payload);
+        },
+      },
+    },
+  };
+  </script>
+  
+  
+  
+  
+

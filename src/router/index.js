@@ -1,19 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Blogs from '../views/Blogs.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Profile from '../views/Profile.vue'
 import Admin from '../views/Admin.vue'
+import RemoveAdmin from '../views/RemoveAdmin.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import CreatePost from '../views/CreatePost.vue'
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '@/firebase/init'
 import NotFound from '../views/NotFound.vue'
+import Dashboard from '../views/Dashboard.vue'
+import blogs from '../views/Blogs.vue'
+import WriteLog from '../views/WriteLog.vue'
+import PostList from '../views/PostList.vue'
+import PostDetail from '../views/PostDetail.vue'
+import InvoiceForm from '../views/InvoiceForm.vue'
 
-const auth = getAuth();
 
-const isAdmin = (user) => user && user.admin;
+const requireAuth = (to, from, next) => {
+  const user = auth.currentUser;
+  if (user) {
+    next();
+  } else {
+    next('/login');
+  }
+};
 
+const requireAdmin = async (to, from, next) => {
+  const user = auth.currentUser;
+  if (user) {
+    const tokenResult = await user.getIdTokenResult();
+    if (tokenResult.claims.admin) {
+      next();
+    } else {
+      next('/notfound');
+    }
+  } else {
+    next('/notfound');
+  }
+};
 
 const routes = [
   {
@@ -25,28 +51,12 @@ const routes = [
     }
   },
   {
-    path: "/blogs",
-    name: "Blogs",
-    component: Blogs,
-    meta: {
-      title: 'Blogs'
-    }
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login,
     meta: {
       title: "Login"
     },
-    beforeEnter: (to, from, next) => {
-      const user = auth.currentUser;
-      if (user) {
-        next('/');
-      } else {
-        next();
-      }
-    }
   }, 
   {
     path: '/register',
@@ -54,14 +64,6 @@ const routes = [
     component: Register,
     meta: {
       title: 'Register'
-    },
-    beforeEnter: (to, from, next) => {
-      const user = auth.currentUser;
-      if (user) {
-        next('/');
-      } else {
-        next();
-      }
     }
   },
   {
@@ -70,16 +72,65 @@ const routes = [
     component: CreatePost,
     meta: {
       title: 'Create Post',
-      requiresAdmin: true,
+      requiresAuth: true,
     },
+    beforeEnter: requireAuth,
+  },
+  {
+    path: '/blogs',
+    name: 'blogs',
+    component: blogs,
+    meta: {
+      title: 'Blogs',
+    },
+  },
+  {
+    path: '/writelog',
+    name: 'WriteLog',
+    component: WriteLog,
+    meta: {
+      title: 'WriteLog',
+    },
+  },
+  { 
+    path: '/postlist', 
+    name: 'TradingLog', 
+    component: PostList
+  },
+  { path: '/posts/:id', 
+    name: 'PostDetail', 
+    component: PostDetail, 
+    props: true 
+  },
+  {
+    path: '/invoiceform',
+    name: 'InvoiceForm',
+    component: InvoiceForm,
+    meta: {
+      title: "InvoiceForm"
+    }
   },
   {
     path: '/profile',
     name: 'Profile',
     component: Profile,
     meta: {
-      title: 'Profile'
-    }
+      title: 'Profile',
+      requiresAuth: true,
+    },
+    beforeEnter: requireAuth,
+  },
+  {
+    path: '/Dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: {
+      title: 'Dashboard',
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    beforeEnter: requireAuth,
+    beforeEnter: requireAdmin,
   },
   {
     path: '/admin',
@@ -88,12 +139,34 @@ const routes = [
     meta: {
       title: 'Admin',
       requiresAdmin: true,
-    }
+      requiresAuth: true,
+    },
+    beforeEnter: requireAuth,
+    beforeEnter: requireAdmin,
   },
   {
-    path: '/:pathMatch(.*)*',
+    path: '/RemoveAdmin',
+    name: 'RemoveAdmin',
+    component: RemoveAdmin,
+    meta: {
+      title: 'Remove Admin',
+      requiresAdmin: true,
+      requiresAuth: true,
+    },
+    beforeEnter: requireAuth,
+    beforeEnter: requireAdmin,
+  },
+  {
+    path: '/notfound',
     name: 'NotFound',
     component: NotFound,
+    meta: {
+      title: 'Page Not Found',
+    },
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/notfound',
   },
   {
     path: '/forgot-password',
@@ -104,33 +177,21 @@ const routes = [
     }
   }
 ]
-
+// router.beforeEach((to, from, next) => {
+//   onAuthStateChanged(auth, (user) => {
+//     if (user) {
+//       // Redirect to home page after sign-in
+//       next('/home');
+//     } else {
+//       // Redirect to login page after sign-out
+//       next('/login');
+//     }
+//   });
+// });
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-});
-
-router.beforeEach(async (to, from, next) => {
-  const requiresAdmin = to.meta.requiresAdmin;
-  const user = auth.currentUser;
-
-  if (requiresAdmin) {
-    if (user) {
-      const tokenResult = await user.getIdTokenResult();
-      if (isAdmin(tokenResult.claims)) {
-        document.title = `${to.meta.title} | CODEMIB`;
-        next();
-      } else {
-        next('/notfound');
-      }
-    } else {
-      next('/notfound');
-    }
-  } else {
-    document.title = `${to.meta.title} | CODEMIB`;
-    next();
-  }
 });
 
 export default router;

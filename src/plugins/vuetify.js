@@ -8,7 +8,7 @@ import { md1 } from 'vuetify/blueprints'
 
 export default createVuetify({
   display: {
-    mobileBreakpoint: 'sm',
+    mobileBreakpoint: 'xs, sm, md, lg, lg, xl',
     thresholds: {
       xs: 0,
       sm: 340,

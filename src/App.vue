@@ -9,17 +9,14 @@
 </template>
                    
 <script>
-// import { doc, orderBy, query, deleteDoc } from 'firebase/firestore'
 import SignupForm from './components/SignupForm.vue'
 import LoginForm from './components/LoginForm.vue'
 import { auth } from './firebase/init.js'
-import NavbarTitle from '@/views/site/navtitle.vue'
-import SiteMenu from '@/views/site/navmenu.vue'
 import Navigation from '@/components/Navigation.vue'
 import Footer from '@/components/Footer.vue'
 
 export default {
-  components: { Footer, Navigation,NavbarTitle, SiteMenu, SignupForm, LoginForm },
+  components: { Footer, Navigation, SignupForm, LoginForm },
   name: 'App',
   props: [],
   data () {
@@ -63,27 +60,13 @@ export default {
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Quicksand", sans-serif;
-}
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.container {
-  max-width: 1440px;
-  margin: 0 auto;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 .link {
   cursor: pointer;
   text-decoration: none;
   text-transform: uppercase;
-  color: black;
+  color: #000;
 }
 .link-light {
   color: #fff;

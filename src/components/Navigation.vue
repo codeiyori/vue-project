@@ -7,8 +7,10 @@
       <div class="nav-links">
         <ul v-show="!mobile">
           <router-link class="link" :to="{name: 'Home'}">Home</router-link>
-          <router-link class="link" :to="{name: 'Blogs'}">Blogs</router-link>
+          <router-link class="link" to="#">Blogs</router-link>
           <router-link v-if ="admin" class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
+          <router-link v-if ="user" class="link" :to="{name: 'TradingLog'}">거래일지</router-link>
+          <router-link v-if ="user" class="link" :to="{name: 'InvoiceForm'}">인보이스</router-link>
           <router-link v-if ="!user" class="link" :to="{name: 'Login'}">Login/Register</router-link> 
           <template v-if="user">
              <ProfileModal />
@@ -26,7 +28,7 @@
         </v-divider>
         <v-divider :thickness="0" class="py-2"></v-divider>
         <router-link class="link pt-2 pb-2" :to="{name: 'Home'}">Home</router-link>
-        <router-link class="link pt-2 pb-2" :to="{name: 'Blogs'}">Blogs</router-link>
+        <router-link class="link pt-2 pb-2" to="#">Blogs</router-link>
         <router-link class="link pt-2 pb-2" to="#">Create Post</router-link>
       </ul>
     </transition>
@@ -93,16 +95,18 @@ export default defineComponent({
 header {
   background-color: #fff;
   padding: 0 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 99;
+  border-bottom: solid 1px #e0e0e0;
 
   .link {
+    font-family: "quicksand", sans-serif;
+    font-size: 14px;
     font-weight: 500;
     padding: 0 8px;
     transition: 0.3s color ease;
 
     &:hover {
-      color: #1eb8b8;
+      color: #5a5ccc;
     }
   }
 
@@ -121,7 +125,6 @@ header {
         text-decoration: none;
       }
     }
-
     .nav-links {
         position: relative;
         display: flex;

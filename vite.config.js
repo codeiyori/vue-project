@@ -2,10 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 
-
 const path = require('path')
-
-// vite.config.js 파일 내용
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -32,7 +29,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src')
     }
-  }
+  },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
     extensions: [
