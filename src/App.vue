@@ -4,7 +4,7 @@
     <v-main style="background-color: #f6f6f7;">
       <router-view />
     </v-main>
-    <Footer />
+    <Footer :footer="footer"></Footer>
   </v-app>
 </template>
                    
@@ -16,12 +16,13 @@ import Navigation from '@/components/Navigation.vue'
 import Footer from '@/components/Footer.vue'
 
 export default {
-  components: { Footer, Navigation, SignupForm, LoginForm },
+  components: { Footer, Navigation, SignupForm, LoginForm, Footer },
   name: 'App',
   props: [],
   data () {
     return {
       navgation: null,
+      footer: ' - CODEMIB',
     };
   },
   beforeUpdate() {

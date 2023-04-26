@@ -12,7 +12,7 @@
         </v-btn>
       </v-row>
       <v-row no-gutters class="d-flex align-center justify-center">
-        <span class="text-caption">{{ new Date().getFullYear() }} — CODEMIB</span>
+        <span class="text-caption">{{ new Date().getFullYear() + ' ' + footer }}</span>
       </v-row>
     </v-col>
   </v-row>
@@ -20,6 +20,7 @@
 </template>
 <script>
 export default {
+  props: ['footer'],
   data: () => ({
     icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram'],
   }),

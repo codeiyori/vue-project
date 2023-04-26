@@ -1,5 +1,10 @@
 <template>
-  <div class="home">
+
+
+<v-container class="pt-6 align-center justify-center">
+  <p>hi</p>
+  <!-- <ExampleNow :title="title"/> -->
+  <!-- <ExampleNow/> -->
     <!-- <v-container class="pa-0">
       <blog-post v-if="!user" :post="welcomeScreen" />
       <blog-post v-else="user" :post="GoodByeScreen" />
@@ -17,18 +22,19 @@
         </v-col>
       </v-row>
     </v-container> -->
-  </div>
+</v-container>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/firebase/init'
+// import ExampleNow from './ExampleNow.vue'
 import BlogPost from '../components/BlogPost.vue'
 import BlogCard from '../components/BlogCard.vue'
 export default {
   name: "Home",
-  components: { BlogPost, BlogCard },
+  components: { BlogPost, BlogCard  },
   setup() {
     const user = ref(null)
 
@@ -50,6 +56,7 @@ export default {
 },
   data() {
       return {
+          // title: '내 타이틀임',
           welcomeScreen: {
               title: "Welcome!",
               blogPost: "afaoieijfaioejiofaoifjaiofejifoea",

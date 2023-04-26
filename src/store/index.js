@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
-import { auth } from '../firebase/init.js'
-import { db } from '../firebase/init.js'
-import { collection, doc, getDocs, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
+import { auth, db, GoogleAuthProvider, signInWithPopup, doc, setDoc } from '../firebase/init.js'
+import { collection, onSnapshot, updateDoc } from 'firebase/firestore'
 
 export default createStore({
   state: {
@@ -22,13 +21,16 @@ export default createStore({
     profileUsername: null,
     profileId: null,
     profileInitials: null,
-    users: []
+    users: [],
   },
   getters: {
   },
   mutations: {
     setUsers(state, payload) {
       state.users = payload
+    },
+    setUser(state, payload) {
+      state.user = payload
     },
     setStatus(state, payload) {
       state.status = payload
@@ -101,6 +103,22 @@ export default createStore({
       });
       commit("setProfileInitials");
     },
+    async signInWithGoogle({ commit }) {
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const userRef = doc(collection(db, 'users'), user.uid);
+        await setDoc(userRef, {
+          username: user.displayName,
+          email: user.email,
+          status: "User"
+        })
+        commit('setUser', user);
+      } catch (error) {
+        console.log(error);
+      }
+    },      
   },
   modules: {
   }

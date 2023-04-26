@@ -16,6 +16,34 @@ import WriteLog from '../views/WriteLog.vue'
 import PostList from '../views/PostList.vue'
 import PostDetail from '../views/PostDetail.vue'
 import InvoiceForm from '../views/InvoiceForm.vue'
+// import ExampleNow from '../views/ExampleNow.vue'
+import LogBook from '../views/LogBook.vue'
+import SubscriptionButton from '../views/SubscriptionButton.vue'
+
+// router.beforeEach((to, from, next) => {
+//   onAuthStateChanged(auth, (user) => {
+//     if (user) {
+//       // Redirect to home page after sign-in
+//       next('/home');
+//     } else {
+//       // Redirect to login page after sign-out
+//       next('/login');
+//     }
+//   });
+// });
+// Vue Router에 내장된 기능으로, Vue Router와 높은 호환성을 가지고 있어 
+// Vue Router와 함께 사용하기 편리합니다.
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Redirect signed-in user to home
+      router.push('/');
+  } else {
+    // Redirect signed-out user to login
+      router.push('/login');
+  }
+});
 
 
 const requireAuth = (to, from, next) => {
@@ -50,6 +78,22 @@ const routes = [
       title: "Home"
     }
   },
+  {
+    path: '/logbook',
+    name: 'LogBook',
+    component: LogBook,
+    meta: {
+      title: "Log Book"
+    }
+  },
+  // {
+  //   path: '/example-now',
+  //   name: 'ExampleNow',
+  //   component: ExampleNow,
+  //   meta: {
+  //     title: "Example Now"
+  //   }
+  // },
   {
     path: '/login',
     name: 'Login',
@@ -90,6 +134,14 @@ const routes = [
     component: WriteLog,
     meta: {
       title: 'WriteLog',
+    },
+  },
+  {
+    path: '/SubscriptionButton',
+    name: 'SubscriptionButton',
+    component: SubscriptionButton,
+    meta: {
+      title: 'SubscriptionButton',
     },
   },
   { 
@@ -177,21 +229,25 @@ const routes = [
     }
   }
 ]
-// router.beforeEach((to, from, next) => {
-//   onAuthStateChanged(auth, (user) => {
-//     if (user) {
-//       // Redirect to home page after sign-in
-//       next('/home');
-//     } else {
-//       // Redirect to login page after sign-out
-//       next('/login');
-//     }
-//   });
-// });
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+// Navigation guard to prevent access to /login and /register pages for logged-in users
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login' || to.path === '/register') {
+    if (auth.currentUser) {
+      // Redirect logged-in users to a different page, e.g., the home page
+      next({ path: '/' });
+    } else {
+      // Allow access for not logged-in users
+      next();
+    }
+  } else {
+    // Allow access to other pages
+    next();
+  }
 });
 
 export default router;

@@ -7,7 +7,7 @@
       <div class="nav-links">
         <ul v-show="!mobile">
           <router-link class="link" :to="{name: 'Home'}">Home</router-link>
-          <router-link class="link" to="#">Blogs</router-link>
+          <router-link v-if ="user" class="link" :to="{name: 'blogs'}">블로그</router-link>
           <router-link v-if ="admin" class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
           <router-link v-if ="user" class="link" :to="{name: 'TradingLog'}">거래일지</router-link>
           <router-link v-if ="user" class="link" :to="{name: 'InvoiceForm'}">인보이스</router-link>

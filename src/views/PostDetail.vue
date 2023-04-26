@@ -108,18 +108,59 @@
           console.error('Error getting document: ', error);
         }
       },
-      async likePost(post) {
+      async likePost(post, user) {
         try {
           const docRef = doc(collection(db, 'LogBook'), this.id);
-          await updateDoc(docRef, {
-            likes: post.likes + 1,
-          });
-          this.post.likes++;
+          const docSnap = await getDoc(docRef);
+          const data = docSnap.data();
+          if (data.likedBy.includes(user)) {
+            await updateDoc(docRef, {
+              likeCount: post.likeCount - 1,
+              likedBy: data.likedBy.filter((likedUser) => likedUser !== user),
+            });
+            this.post.likeCount--;
+            console.log('Unliked post.');
+          } else {
+            await updateDoc(docRef, {
+              likeCount: post.likeCount + 1,
+              likedBy: [...data.likedBy, user],
+            });
+            this.post.likeCount++;
+            console.log('Liked post.');
+          }
         } catch (error) {
           console.error('Error updating document: ', error);
         }
-      },
+      }
+
+//       async likePost(post) {
+//   try {
+//     const userId = getUserID(); // 사용자의 ID를 가져옴
+//     const docRef = doc(collection(db, 'LogBook'), this.id);
+//     const docSnap = await getDoc(docRef);
+//     const logbook = docSnap.data();
+//     const likedPosts = logbook.likedPosts || []; // 좋아요를 누른 게시물 ID 배열
+//     if (!likedPosts.includes(post.id)) { // 사용자가 이미 좋아요를 누른 게시물인지 확인
+//       await updateDoc(docRef, {
+//         likes: post.likes + 1,
+//         likedPosts: [...likedPosts, post.id] // 사용자의 좋아요 기록에 게시물 ID 추가
+//       });
+//       this.post.likes++;
+//     } else { // 이미 좋아요를 누른 게시물이면, 좋아요 취소
+//       await updateDoc(docRef, {
+//         likes: post.likes - 1,
+//         likedPosts: likedPosts.filter(id => id !== post.id) // 사용자의 좋아요 기록에서 게시물 ID 삭제
+//       });
+//       this.post.likes--;
+//     }
+//   } catch (error) {
+//     console.error('Error updating document: ', error);
+//   }
+// }
+
     },
   };
   </script>
+
+  
   

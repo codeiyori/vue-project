@@ -109,7 +109,7 @@ export default {
             status: "User"
           })
           this.$emit('loggedIn')
-          this.$router.push({ name: "Home" });
+          // this.$router.push({ name: 'Home' }) 이미 라우터에서 onAuthStateChanged로 설정함
         } catch (error) {
           this.error = true;
           this.errorMsg = error.message;

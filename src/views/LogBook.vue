@@ -96,3 +96,35 @@ export default {
   }
 }
 </script> -->
+
+<template>
+  <div>
+    <h1>Extracted Text:</h1>
+    <p>{{ extractedText }}</p>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import cheerio from 'cheerio';
+
+export default {
+  data() {
+    return {
+      extractedText: '', // data property to store the extracted text
+    };
+  },
+  mounted() {
+    axios.get('http://localhost:3000/api/marketwatch')
+      .then(response => {
+        const html = response.data;
+        const $ = cheerio.load(html);
+        const moduleHeader = $('.intraday__data bg-quote.value').text();
+        this.extractedText = moduleHeader; // update the extractedText data property with the extracted text
+      })
+      .catch(error => {
+        console.error('Error occurred while fetching data:', error);
+      });
+  },
+};
+</script>
