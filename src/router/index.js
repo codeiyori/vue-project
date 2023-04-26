@@ -129,6 +129,14 @@ const routes = [
     },
   },
   {
+    path: '/subscriptionButton',
+    name: 'SubscriptionButton',
+    component: SubscriptionButton,
+    meta: {
+      title: 'SubscriptionButton',
+    },
+  },
+  {
     path: '/writelog',
     name: 'WriteLog',
     component: WriteLog,

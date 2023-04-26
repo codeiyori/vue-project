@@ -11,6 +11,7 @@
           <router-link v-if ="admin" class="link" :to="{name: 'CreatePost'}">Create Post</router-link>
           <router-link v-if ="user" class="link" :to="{name: 'TradingLog'}">거래일지</router-link>
           <router-link v-if ="user" class="link" :to="{name: 'InvoiceForm'}">인보이스</router-link>
+          <router-link v-if ="user" class="link" :to="{name: 'SubscriptionButton'}">Subscription</router-link>
           <router-link v-if ="!user" class="link" :to="{name: 'Login'}">Login/Register</router-link> 
           <template v-if="user">
              <ProfileModal />
